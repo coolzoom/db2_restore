@@ -1,26 +1,25 @@
 #pragma once
 #include"db2.h"
-#include<fstream>
 #include<string>
 #include<string_view>
 
 namespace wdc3
 {
 template<typename T>
-inline db2<T> read_db2(std::string_view str)
+inline db2<T> read_db2(std::string_view path)
 {
-	std::ifstream fin(str.data(),std::ifstream::binary);
-	if(!fin)
-		fin.exceptions(std::ifstream::failbit);
-	return std::string(std::istreambuf_iterator<char>(fin),std::istreambuf_iterator<char>());
+	fast_io::ibuf_file ibf(path);
+	std::string str;
+	scan(ibf,fast_io::whole(str));
+	return str;
 }
 
 template<typename T>
-inline void write_db2(std::string_view str,db2<T> const &w)
+inline void write_db2(std::string_view path,db2<T> const &w)
 {
 	auto sr(serialize(w));
-	std::ofstream fout(str.data(),std::ofstream::binary);
-	fout.rdbuf()->sputn(sr.data(),sr.size());
+	fast_io::onative_file obf(path);
+	print(obf,sr);
 }
 
 }

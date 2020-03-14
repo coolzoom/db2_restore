@@ -146,7 +146,7 @@ inline constexpr void print_define(ostrm& o,const field_storage_info& fs)
 	case field_compression::none:break;
 	case field_compression::bitpacked:
 		print(o,"\n\nbitpacking_offset_bits\t",fs.values.front(),
-		"\nbitpacking_size_bits\t",fs.values[1];
+		"\nbitpacking_size_bits\t",fs.values[1],
 		"\nflags\t",fs.values[2]);
 	break;
 	case field_compression::common_data:
@@ -191,7 +191,7 @@ struct relationship_entry
 };
 
 template<fast_io::buffer_output_stream ostrm>
-inline constexpr print_define(ostrm& o,relationship_entry const& fs)
+inline constexpr void print_define(ostrm& o,relationship_entry const& fs)
 {
 	print(o,fs.foreign_id,u8" ",fs.record_index);
 }
