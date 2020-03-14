@@ -18,10 +18,9 @@ inline decltype(auto) cvs(const std::string &str,const char * &cstr)
 template<typename T>
 inline auto cvs(const std::string &str,const char * &cstr,std::size_t count)
 {
-	using namespace std::string_literals;
 	auto r(reinterpret_cast<const T*>(cstr));
 	if(str.data()+str.size()<cstr+sizeof(T)*count)
-		throw std::out_of_range("out of range: (size: "s+std::to_string(str.size())+") (oor: "s+std::to_string(cstr+sizeof(T)*count-str.data())+") count:("s+std::to_string(count)+")"s);
+		throw std::out_of_range(fast_io::concat<>("out of range: (size: ",str.size(),") (oor: ",cstr+sizeof(T)*count-str.data(),") count:(",count,")"));
 	std::vector<T> vec(r,r+count);
 	cstr+=sizeof(T)*count;
 	return vec;
@@ -30,9 +29,8 @@ inline auto cvs(const std::string &str,const char * &cstr,std::size_t count)
 template<>
 inline auto cvs<char>(const std::string &str,const char * &cstr,std::size_t count)
 {
-	using namespace std::string_literals;
 	if(str.data()+str.size()<cstr+count)
-		throw std::out_of_range("out of range: (size: "s+std::to_string(str.size())+") (oor: "s+std::to_string(cstr+count-str.data())+") count:("s+std::to_string(count)+")"s);
+		throw std::out_of_range(fast_io::concat<>("out of range: (size: ",str.size(),") (oor: ",cstr+count-str.data(),") count:(",count,")"));
 	std::string r(cstr,cstr+count);
 	cstr+=count;
 	return r;

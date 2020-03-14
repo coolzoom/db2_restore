@@ -42,9 +42,9 @@ struct section_header
 };
 
 template<fast_io::buffer_output_stream ostrm>
-decltype(auto) print_define(ostrm& o,const section_header& fs)
+inline constexpr void print_define(ostrm& o,const section_header& fs)
 {
-	return print(o,u8"tact_key_hash:",fs.tact_key_hash,
+	print(o,u8"tact_key_hash:",fs.tact_key_hash,
 			u8"\nfile_offset:",fs.file_offset,
 			u8"\nrecord_count:",fs.record_count,
 			u8"\nstring_table_size:",fs.string_table_size,
@@ -58,10 +58,9 @@ decltype(auto) print_define(ostrm& o,const section_header& fs)
 template<typename T>
 inline decltype(auto) check_section_validity(const std::string& str,const char * &p,const section_header& s)
 {
-	using namespace std::string_literals;
 	if(str.data()+s.file_offset!=p)
-		throw std::runtime_error("offset error size: "s+std::to_string(str.size())+" pos: "s+std::to_string(p-str.data())+
-						" should be: "s+std::to_string(s.file_offset));
+		throw std::runtime_error(fast_io::concat<>("offset error size: ",str.size()," pos: ",p-str.data(),
+						" should be: ",s.file_offset));
 	return cvs<T>(str,p,s.record_count);
 }
 
@@ -136,35 +135,34 @@ struct field_storage_info
 template<fast_io::buffer_output_stream ostrm>
 inline constexpr void print_define(ostrm& o,const field_storage_info& fs)
 {
-	using namespace std::string_literals;
-	print(o,"offset_bits\t",fs.offset_bits,
-		"\nfield_size\t",fs.field_size,
-		"\nadditional_data_size\t",fs.additional_data_size,
-		"\ntype\t",fs.type);
+	print(o,u8"offset_bits\t",fs.offset_bits,
+		u8"\nfield_size\t",fs.field_size,
+		u8"\nadditional_data_size\t",fs.additional_data_size,
+		u8"\ntype\t",fs.type);
 	switch(fs.type)
 	{
 	case field_compression::none:break;
 	case field_compression::bitpacked:
-		print(o,"\n\nbitpacking_offset_bits\t",fs.values.front(),
-		"\nbitpacking_size_bits\t",fs.values[1],
-		"\nflags\t",fs.values[2]);
+		print(o,u8"\n\nbitpacking_offset_bits\t",fs.values.front(),
+		u8"\nbitpacking_size_bits\t",fs.values[1],
+		u8"\nflags\t",fs.values[2]);
 	break;
 	case field_compression::common_data:
-		print(o,"\n\ndefault_value\t",fs.values.front());
+		print(o,u8"\n\ndefault_value\t",fs.values.front());
 	break;
 	case field_compression::bitpacked_indexed:
-		print(o,"\n\nbitpacking_offset_bits\t",fs.values.front(),
-		o,"\nbitpacking_size_bits\t"s,fs.values[1]);
+		print(o,u8"\n\nbitpacking_offset_bits\t",fs.values.front(),
+		o,u8"\nbitpacking_size_bits\t",fs.values[1]);
 	break;
 	case field_compression::bitpacked_indexed_array:
-		print(o,"\n\nbitpacking_offset_bits\t",fs.values.front(),
-		"\nbitpacking_size_bits\t"s,fs.values[1],
-		"\narray_count\t"s,fs.values[2]);
+		print(o,u8"\n\nbitpacking_offset_bits\t",fs.values.front(),
+		u8"\nbitpacking_size_bits\t",fs.values[1],
+		u8"\narray_count\t",fs.values[2]);
 	break;
 	default:
-		print(o,"\n\n");
+		print(o,u8"\n\n");
 		for(std::size_t i(0);i!=fs.values.size();++i)
-			print(o,fs.values[i],"\t");
+			print(o,fs.values[i],u8"\t");
 	}
 }
 

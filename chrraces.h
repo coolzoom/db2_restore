@@ -94,7 +94,7 @@ constexpr void print_define(ostrm& out,chrraces const& e)
 		print(out,u8"(Playable)");
 	if(flags(e)&0x80)
 		print(out,u8"(Old models are disabled)");
-	print(out,u8"\tsd male:",sd_male(e),u8," sd female:",sd_female(e),
+	print(out,u8"\tsd male:",sd_male(e),u8" sd female:",sd_female(e),
 	u8"\thd male:",hd_male(e),u8"\thd female:",hd_female(e));
 	return out;
 }

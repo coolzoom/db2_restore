@@ -207,7 +207,7 @@ inline void hd(creaturedisplayinfoextra& e,std::uint32_t u)
 template<fast_io::buffer_output_stream ostrm>
 inline constexpr void print_define(ostrm& out,creaturedisplayinfoextra const& e)
 {
-	print(raceid(e),u8"\t",sexid(e),u8"\trf:",race_to_facial(e),u8"\tsd:",sd(e),u8"\thd:",hd(e));
+	print(out,raceid(e),u8"\t",sexid(e),u8"\trf:",race_to_facial(e),u8"\tsd:",sd(e),u8"\thd:",hd(e));
 }
 
 }

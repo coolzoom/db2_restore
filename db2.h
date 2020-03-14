@@ -21,16 +21,16 @@ struct db2
 	std::vector<std::byte> pallet,common;
 	db2(std::string const &str)
 	{
-		using namespace std::string_literals;
+		using namespace std::string_view_literals;
 		auto magic(str.substr(0,4));
-		if(magic!="WDC3"s)
-			throw std::runtime_error("Magic is not WDC3. which is ("s+magic+')');
+		if(magic!="WDC3"sv)
+			throw std::runtime_error(fast_io::concat<>("Magic is not WDC3. which is (",magic,")"));
 		auto p(str.data()+4);
 		hd=cvs<header>(str,p);
 		if(hd.record_size!=sizeof(T))
-			throw std::runtime_error("record size "s+std::to_string(sizeof(T))+" is incorrect. Correct one should be "s+std::to_string(hd.record_size)+" bytes"s);
+			throw std::runtime_error(fast_io::concat<>("record size ",sizeof(T)," is incorrect. Correct one should be ",hd.record_size," bytes"));
 		if(hd.flags&1)
-			throw std::runtime_error("offset records not implemented, flags is "s+std::to_string(hd.flags));
+			throw std::runtime_error(fast_io::concat<>("offset records not implemented, flags is ",hd.flags));
 		section_headers=cvs<section_header>(str,p,hd.section_count);
 		fields=cvs<field_structure>(str,p,hd.total_field_count);
 		field_storages=cvs<field_storage_info>(str,p,hd.field_storage_info_size/sizeof(field_storage_info));
@@ -51,7 +51,7 @@ inline auto serialize(db2<T> const&d)
 	s.reserve(10000000);
 	decltype(auto) header(svc(s,d.hd));
 	if(header.flags&1)
-		throw std::runtime_error("offset records not implemented, flags is "s+std::to_string(header.flags));
+		throw std::runtime_error(fast_io::concat<>("offset records not implemented, flags is ",header.flags));
 	decltype(auto) secheader(svcs<section_header>(s,d.sections.size()));
 	decltype(auto) fields(svc(s,d.fields,header.total_field_count));
 	decltype(auto) field_storages(svc(s,d.field_storages,header.field_storage_info_size));
