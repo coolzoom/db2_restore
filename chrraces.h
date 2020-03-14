@@ -9,6 +9,7 @@ struct chrraces
 {
 	std::array<std::int32_t,33> a;
 	std::uint32_t unk1;
+	std::uint32_t TransmogrifyDisabledSlotMask;
 	std::array<std::int16_t,4> b;
 	std::array<std::int8_t,16> c;
 //	std::uint32_t race;
